@@ -9,7 +9,11 @@ export const resolveApiBaseUrl = (
 ): string => {
   const trimmedBaseUrl = explicitBaseUrl?.trim();
   if (trimmedBaseUrl) {
-    return trimmedBaseUrl;
+    // Avoid route-relative URLs like "api/v1" that break on nested frontend routes.
+    if (/^https?:\/\//i.test(trimmedBaseUrl) || trimmedBaseUrl.startsWith("/")) {
+      return trimmedBaseUrl;
+    }
+    return `/${trimmedBaseUrl}`;
   }
 
   if (location && STANDALONE_FRONTEND_PORTS.has(location.port)) {

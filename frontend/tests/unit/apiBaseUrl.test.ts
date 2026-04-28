@@ -9,6 +9,11 @@ describe("resolveApiBaseUrl", () => {
     );
   });
 
+  it("normalizes explicit path-only API base URLs", () => {
+    expect(resolveApiBaseUrl("api/v1", { hostname: "localhost", port: "4173" })).toBe("/api/v1");
+    expect(resolveApiBaseUrl("/api/v1", { hostname: "localhost", port: "4173" })).toBe("/api/v1");
+  });
+
   it("targets the backend port when the UI is served from Vite dev or preview", () => {
     expect(resolveApiBaseUrl(undefined, { hostname: "localhost", port: "4173" })).toBe(
       "http://localhost:8000/api/v1",
