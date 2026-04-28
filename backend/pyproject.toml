@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fairsight-backend"
+version = "0.1.0"
+description = "FairSight backend API and bias engine"
+requires-python = ">=3.11"
+dependencies = [
+  "aiosqlite>=0.20.0",
+  "alembic>=1.13.2",
+  "asyncpg>=0.29.0",
+  "celery[redis]>=5.4.0",
+  "email-validator>=2.2.0",
+  "fairlearn>=0.11.0",
+  "fastapi>=0.115.0",
+  "httpx>=0.28.0",
+  "numpy>=2.1.0",
+  "orjson>=3.10.0",
+  "pandas>=2.2.0",
+  "bcrypt<4.1",
+  "passlib[bcrypt]>=1.7.4",
+  "psycopg[binary]>=3.2.0",
+  "pydantic>=2.9.0",
+  "pydantic-settings>=2.5.0",
+  "python-jose[cryptography]>=3.3.0",
+  "python-multipart>=0.0.9",
+  "redis>=5.1.0",
+  "reportlab>=4.2.2",
+  "scikit-learn>=1.5.0",
+  "shap>=0.46.0",
+  "sqlalchemy>=2.0.34",
+  "structlog>=24.4.0",
+  "uvicorn[standard]>=0.30.6",
+  "aif360>=0.6.1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "black>=24.8.0",
+  "isort>=5.13.2",
+  "pytest>=8.3.2",
+  "pytest-asyncio>=0.24.0",
+  "pytest-cov>=5.0.0",
+  "respx>=0.21.1",
+  "ruff>=0.6.9",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
