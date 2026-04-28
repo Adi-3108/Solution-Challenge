@@ -1,0 +1,17 @@
+age,gender,race,education,experience,zipcode,approved,predicted_approved,score
+29,F,White,Bachelors,5,10001,1,1,0.81
+35,F,White,Masters,8,10002,0,0,0.24
+30,M,White,Bachelors,5,10003,1,1,0.79
+42,M,White,PhD,12,10004,0,0,0.26
+28,F,Black,Bachelors,5,10005,1,1,0.80
+33,F,Black,Masters,8,10006,0,0,0.29
+31,M,Black,Bachelors,5,10007,1,1,0.78
+41,M,Black,PhD,12,10008,0,0,0.23
+27,F,Asian,HighSchool,3,10009,1,1,0.74
+36,F,Asian,Masters,8,10010,0,0,0.27
+27,M,Asian,HighSchool,3,10011,1,1,0.73
+42,M,Asian,PhD,12,10012,0,0,0.25
+27,F,Hispanic,HighSchool,3,10013,1,1,0.75
+34,F,Hispanic,Masters,8,10014,0,0,0.28
+27,M,Hispanic,HighSchool,3,10015,1,1,0.76
+42,M,Hispanic,PhD,12,10016,0,0,0.22

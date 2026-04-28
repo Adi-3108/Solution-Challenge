@@ -1,0 +1,634 @@
+{
+  "executive_summary": [
+    "FairSight reviewed this dataset and any associated predictions for differences in outcomes across protected groups. The bias risk score summarizes how many fairness checks failed and how severe the gaps appear to be.",
+    "The findings below highlight which groups are affected, why the issue matters, and which remediation steps can reduce risk before deployment or policy use."
+  ],
+  "run_id": "0d1fca86-fe63-42bb-913a-a6a96ecc7a76",
+  "project_name": "Runner project",
+  "bias_risk_score": 95.0,
+  "status": "completed",
+  "started_at": "2026-04-27T21:35:28.192616",
+  "completed_at": "2026-04-27T21:35:28.320238",
+  "dataset_hash": "3566b04305260adadb03fa567ebbbb8307aaad2e66aea602c1d8722d61eafd96",
+  "model_hash": null,
+  "flagged_issues": [
+    {
+      "metric_name": "disparate_impact_ratio",
+      "group_name": "gender",
+      "value": 0.0,
+      "severity": "red",
+      "explanation": "The unprivileged group receives the positive outcome at 0.0% the rate of the privileged group. The 80% rule (four-fifths rule) is a widely used legal standard."
+    },
+    {
+      "metric_name": "statistical_parity_difference",
+      "group_name": "gender",
+      "value": -1.0,
+      "severity": "red",
+      "explanation": "The gap in positive outcome rates between F and M is -1.000. Larger gaps suggest unequal access to beneficial outcomes."
+    },
+    {
+      "metric_name": "disparate_impact_ratio",
+      "group_name": "race",
+      "value": 0.0,
+      "severity": "red",
+      "explanation": "The unprivileged group receives the positive outcome at 0.0% the rate of the privileged group. The 80% rule (four-fifths rule) is a widely used legal standard."
+    },
+    {
+      "metric_name": "statistical_parity_difference",
+      "group_name": "race",
+      "value": -1.0,
+      "severity": "red",
+      "explanation": "The gap in positive outcome rates between Black and Asian is -1.000. Larger gaps suggest unequal access to beneficial outcomes."
+    },
+    {
+      "metric_name": "individual_fairness_score",
+      "group_name": "overall",
+      "value": 0.62,
+      "severity": "red",
+      "explanation": "Similar individuals receive the same outcome 62.0% of the time. Lower scores suggest the system treats comparable people inconsistently."
+    },
+    {
+      "metric_name": "equal_opportunity_difference",
+      "group_name": "gender",
+      "value": -1.0,
+      "severity": "red",
+      "explanation": "True positive rates differ by -1.000 between F and M."
+    },
+    {
+      "metric_name": "average_odds_difference",
+      "group_name": "gender",
+      "value": -0.4444,
+      "severity": "red",
+      "explanation": "Average odds differ by -0.444; this combines false-positive and true-positive gaps."
+    },
+    {
+      "metric_name": "predictive_parity_difference",
+      "group_name": "gender",
+      "value": -1.0,
+      "severity": "red",
+      "explanation": "Precision differs by -1.000, meaning one group's positive predictions are more reliable."
+    },
+    {
+      "metric_name": "demographic_parity_difference",
+      "group_name": "gender",
+      "value": -0.8889,
+      "severity": "red",
+      "explanation": "Predicted positive rates differ by -0.889 between the compared groups."
+    },
+    {
+      "metric_name": "equalized_odds_difference",
+      "group_name": "gender",
+      "value": 1.0,
+      "severity": "red",
+      "explanation": "The largest gap across true-positive and false-positive rates is 1.000."
+    },
+    {
+      "metric_name": "calibration_error_difference",
+      "group_name": "gender",
+      "value": 0.2654,
+      "severity": "red",
+      "explanation": "Calibration error differs by 0.265, showing score confidence is not equally reliable across groups."
+    },
+    {
+      "metric_name": "equal_opportunity_difference",
+      "group_name": "race",
+      "value": -1.0,
+      "severity": "red",
+      "explanation": "True positive rates differ by -1.000 between Black and Asian."
+    },
+    {
+      "metric_name": "average_odds_difference",
+      "group_name": "race",
+      "value": -0.5,
+      "severity": "red",
+      "explanation": "Average odds differ by -0.500; this combines false-positive and true-positive gaps."
+    },
+    {
+      "metric_name": "predictive_parity_difference",
+      "group_name": "race",
+      "value": -1.0,
+      "severity": "red",
+      "explanation": "Precision differs by -1.000, meaning one group's positive predictions are more reliable."
+    },
+    {
+      "metric_name": "demographic_parity_difference",
+      "group_name": "race",
+      "value": -1.0,
+      "severity": "red",
+      "explanation": "Predicted positive rates differ by -1.000 between the compared groups."
+    },
+    {
+      "metric_name": "equalized_odds_difference",
+      "group_name": "race",
+      "value": 1.0,
+      "severity": "red",
+      "explanation": "The largest gap across true-positive and false-positive rates is 1.000."
+    },
+    {
+      "metric_name": "calibration_error_difference",
+      "group_name": "race",
+      "value": 0.1867,
+      "severity": "red",
+      "explanation": "Calibration error differs by 0.187, showing score confidence is not equally reliable across groups."
+    },
+    {
+      "metric_name": "statistical_parity_difference",
+      "group_name": "F x Black",
+      "value": -0.55,
+      "severity": "red",
+      "explanation": "This intersection sees a positive outcome rate gap of -0.550 versus the dataset overall. Intersectional analysis helps catch harms that do not appear in single-attribute views."
+    },
+    {
+      "metric_name": "statistical_parity_difference",
+      "group_name": "F x Hispanic",
+      "value": -0.55,
+      "severity": "red",
+      "explanation": "This intersection sees a positive outcome rate gap of -0.550 versus the dataset overall. Intersectional analysis helps catch harms that do not appear in single-attribute views."
+    },
+    {
+      "metric_name": "statistical_parity_difference",
+      "group_name": "M x Asian",
+      "value": 0.45,
+      "severity": "red",
+      "explanation": "This intersection sees a positive outcome rate gap of 0.450 versus the dataset overall. Intersectional analysis helps catch harms that do not appear in single-attribute views."
+    },
+    {
+      "metric_name": "statistical_parity_difference",
+      "group_name": "M x White",
+      "value": 0.45,
+      "severity": "red",
+      "explanation": "This intersection sees a positive outcome rate gap of 0.450 versus the dataset overall. Intersectional analysis helps catch harms that do not appear in single-attribute views."
+    }
+  ],
+  "metrics": [
+    {
+      "metric_name": "disparate_impact_ratio",
+      "group_name": "gender",
+      "value": 0.0,
+      "severity": "red",
+      "threshold": 0.8
+    },
+    {
+      "metric_name": "statistical_parity_difference",
+      "group_name": "gender",
+      "value": -1.0,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "disparate_impact_ratio",
+      "group_name": "race",
+      "value": 0.0,
+      "severity": "red",
+      "threshold": 0.8
+    },
+    {
+      "metric_name": "statistical_parity_difference",
+      "group_name": "race",
+      "value": -1.0,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "individual_fairness_score",
+      "group_name": "overall",
+      "value": 0.62,
+      "severity": "red",
+      "threshold": 0.75
+    },
+    {
+      "metric_name": "equal_opportunity_difference",
+      "group_name": "gender",
+      "value": -1.0,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "average_odds_difference",
+      "group_name": "gender",
+      "value": -0.4444,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "predictive_parity_difference",
+      "group_name": "gender",
+      "value": -1.0,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "demographic_parity_difference",
+      "group_name": "gender",
+      "value": -0.8889,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "equalized_odds_difference",
+      "group_name": "gender",
+      "value": 1.0,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "calibration_error_difference",
+      "group_name": "gender",
+      "value": 0.2654,
+      "severity": "red",
+      "threshold": 0.05
+    },
+    {
+      "metric_name": "equal_opportunity_difference",
+      "group_name": "race",
+      "value": -1.0,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "average_odds_difference",
+      "group_name": "race",
+      "value": -0.5,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "predictive_parity_difference",
+      "group_name": "race",
+      "value": -1.0,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "demographic_parity_difference",
+      "group_name": "race",
+      "value": -1.0,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "equalized_odds_difference",
+      "group_name": "race",
+      "value": 1.0,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "calibration_error_difference",
+      "group_name": "race",
+      "value": 0.1867,
+      "severity": "red",
+      "threshold": 0.05
+    },
+    {
+      "metric_name": "statistical_parity_difference",
+      "group_name": "F x Black",
+      "value": -0.55,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "statistical_parity_difference",
+      "group_name": "F x Hispanic",
+      "value": -0.55,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "statistical_parity_difference",
+      "group_name": "M x Asian",
+      "value": 0.45,
+      "severity": "red",
+      "threshold": 0.1
+    },
+    {
+      "metric_name": "statistical_parity_difference",
+      "group_name": "M x White",
+      "value": 0.45,
+      "severity": "red",
+      "threshold": 0.1
+    }
+  ],
+  "recommendations": [
+    {
+      "title": "Disparate Impact Ratio remediation",
+      "strategy": "Pre-processing: reweighing samples",
+      "summary": "Pre-processing: reweighing samples is recommended because Disparate Impact Ratio flagged a fairness gap affecting F. The simulated result shows how the metric could move closer to the configured threshold.",
+      "affected_group": "F",
+      "metric_name": "disparate_impact_ratio",
+      "before_value": 0.0,
+      "after_value": 0.65,
+      "chart_points": [
+        {
+          "value": 0.0,
+          "index": 0.0
+        },
+        {
+          "value": 0.65,
+          "index": 1.0
+        }
+      ],
+      "code_snippet": "from aif360.algorithms.preprocessing import Reweighing\nrw = Reweighing(unprivileged_groups=unprivileged_groups, privileged_groups=privileged_groups)\ndataset_transformed = rw.fit_transform(dataset)"
+    },
+    {
+      "title": "Statistical Parity Difference remediation",
+      "strategy": "Pre-processing: disparate impact remover",
+      "summary": "Pre-processing: disparate impact remover is recommended because Statistical Parity Difference flagged a fairness gap affecting F. The simulated result shows how the metric could move closer to the configured threshold.",
+      "affected_group": "F",
+      "metric_name": "statistical_parity_difference",
+      "before_value": -1.0,
+      "after_value": -0.45,
+      "chart_points": [
+        {
+          "value": -1.0,
+          "index": 0.0
+        },
+        {
+          "value": -0.45,
+          "index": 1.0
+        }
+      ],
+      "code_snippet": "from aif360.algorithms.preprocessing import DisparateImpactRemover\nrepairer = DisparateImpactRemover(repair_level=0.8)\ndataset_transformed = repairer.fit_transform(dataset)"
+    },
+    {
+      "title": "Disparate Impact Ratio remediation",
+      "strategy": "Pre-processing: reweighing samples",
+      "summary": "Pre-processing: reweighing samples is recommended because Disparate Impact Ratio flagged a fairness gap affecting Black. The simulated result shows how the metric could move closer to the configured threshold.",
+      "affected_group": "Black",
+      "metric_name": "disparate_impact_ratio",
+      "before_value": 0.0,
+      "after_value": 0.65,
+      "chart_points": [
+        {
+          "value": 0.0,
+          "index": 0.0
+        },
+        {
+          "value": 0.65,
+          "index": 1.0
+        }
+      ],
+      "code_snippet": "from aif360.algorithms.preprocessing import Reweighing\nrw = Reweighing(unprivileged_groups=unprivileged_groups, privileged_groups=privileged_groups)\ndataset_transformed = rw.fit_transform(dataset)"
+    },
+    {
+      "title": "Statistical Parity Difference remediation",
+      "strategy": "Pre-processing: disparate impact remover",
+      "summary": "Pre-processing: disparate impact remover is recommended because Statistical Parity Difference flagged a fairness gap affecting Black. The simulated result shows how the metric could move closer to the configured threshold.",
+      "affected_group": "Black",
+      "metric_name": "statistical_parity_difference",
+      "before_value": -1.0,
+      "after_value": -0.45,
+      "chart_points": [
+        {
+          "value": -1.0,
+          "index": 0.0
+        },
+        {
+          "value": -0.45,
+          "index": 1.0
+        }
+      ],
+      "code_snippet": "from aif360.algorithms.preprocessing import DisparateImpactRemover\nrepairer = DisparateImpactRemover(repair_level=0.8)\ndataset_transformed = repairer.fit_transform(dataset)"
+    },
+    {
+      "title": "Individual Fairness Score remediation",
+      "strategy": "In-processing: adversarial debiasing",
+      "summary": "In-processing: adversarial debiasing is recommended because Individual Fairness Score flagged a fairness gap affecting overall. The simulated result shows how the metric could move closer to the configured threshold.",
+      "affected_group": "overall",
+      "metric_name": "individual_fairness_score",
+      "before_value": 0.62,
+      "after_value": 0.74,
+      "chart_points": [
+        {
+          "value": 0.62,
+          "index": 0.0
+        },
+        {
+          "value": 0.74,
+          "index": 1.0
+        }
+      ],
+      "code_snippet": "from aif360.algorithms.inprocessing import AdversarialDebiasing\ndebiaser = AdversarialDebiasing(\n    privileged_groups=privileged_groups,\n    unprivileged_groups=unprivileged_groups,\n    scope_name='fairsight_debiasing'\n)\ndebiaser.fit(dataset)"
+    },
+    {
+      "title": "Equal Opportunity Difference remediation",
+      "strategy": "Post-processing: threshold optimizer",
+      "summary": "Post-processing: threshold optimizer is recommended because Equal Opportunity Difference flagged a fairness gap affecting F. The simulated result shows how the metric could move closer to the configured threshold.",
+      "affected_group": "F",
+      "metric_name": "equal_opportunity_difference",
+      "before_value": -1.0,
+      "after_value": -0.45,
+      "chart_points": [
+        {
+          "value": -1.0,
+          "index": 0.0
+        },
+        {
+          "value": -0.45,
+          "index": 1.0
+        }
+      ],
+      "code_snippet": "from fairlearn.postprocessing import ThresholdOptimizer\noptimizer = ThresholdOptimizer(estimator=model, constraints='equal_opportunity')\noptimizer.fit(X_train, y_train, sensitive_features=sensitive_features)"
+    },
+    {
+      "title": "Average Odds Difference remediation",
+      "strategy": "Post-processing: equalized odds",
+      "summary": "Post-processing: equalized odds is recommended because Average Odds Difference flagged a fairness gap affecting F. The simulated result shows how the metric could move closer to the configured threshold.",
+      "affected_group": "F",
+      "metric_name": "average_odds_difference",
+      "before_value": -0.4444,
+      "after_value": -0.2,
+      "chart_points": [
+        {
+          "value": -0.4444,
+          "index": 0.0
+        },
+        {
+          "value": -0.2,
+          "index": 1.0
+        }
+      ],
+      "code_snippet": "from aif360.algorithms.postprocessing import EqOddsPostprocessing\npostprocessor = EqOddsPostprocessing(unprivileged_groups=unprivileged_groups, privileged_groups=privileged_groups)\nadjusted = postprocessor.fit_predict(dataset_true, dataset_pred)"
+    },
+    {
+      "title": "Predictive Parity Difference remediation",
+      "strategy": "In-processing: prejudice remover regularizer",
+      "summary": "In-processing: prejudice remover regularizer is recommended because Predictive Parity Difference flagged a fairness gap affecting F. The simulated result shows how the metric could move closer to the configured threshold.",
+      "affected_group": "F",
+      "metric_name": "predictive_parity_difference",
+      "before_value": -1.0,
+      "after_value": -0.45,
+      "chart_points": [
+        {
+          "value": -1.0,
+          "index": 0.0
+        },
+        {
+          "value": -0.45,
+          "index": 1.0
+        }
+      ],
+      "code_snippet": "from aif360.algorithms.inprocessing import PrejudiceRemover\nmodel = PrejudiceRemover(sensitive_attr='protected_attribute', eta=25.0)\nmodel.fit(dataset)"
+    },
+    {
+      "title": "Demographic Parity Difference remediation",
+      "strategy": "In-processing: adversarial debiasing",
+      "summary": "In-processing: adversarial debiasing is recommended because Demographic Parity Difference flagged a fairness gap affecting F. The simulated result shows how the metric could move closer to the configured threshold.",
+      "affected_group": "F",
+      "metric_name": "demographic_parity_difference",
+      "before_value": -0.8889,
+      "after_value": -0.4,
+      "chart_points": [
+        {
+          "value": -0.8889,
+          "index": 0.0
+        },
+        {
+          "value": -0.4,
+          "index": 1.0
+        }
+      ],
+      "code_snippet": "from aif360.algorithms.inprocessing import AdversarialDebiasing\ndebiaser = AdversarialDebiasing(\n    privileged_groups=privileged_groups,\n    unprivileged_groups=unprivileged_groups,\n    scope_name='fairsight_debiasing'\n)\ndebiaser.fit(dataset)"
+    },
+    {
+      "title": "Equalized Odds Difference remediation",
+      "strategy": "In-processing: adversarial debiasing",
+      "summary": "In-processing: adversarial debiasing is recommended because Equalized Odds Difference flagged a fairness gap affecting F. The simulated result shows how the metric could move closer to the configured threshold.",
+      "affected_group": "F",
+      "metric_name": "equalized_odds_difference",
+      "before_value": 1.0,
+      "after_value": 0.45,
+      "chart_points": [
+        {
+          "value": 1.0,
+          "index": 0.0
+        },
+        {
+          "value": 0.45,
+          "index": 1.0
+        }
+      ],
+      "code_snippet": "from aif360.algorithms.inprocessing import AdversarialDebiasing\ndebiaser = AdversarialDebiasing(\n    privileged_groups=privileged_groups,\n    unprivileged_groups=unprivileged_groups,\n    scope_name='fairsight_debiasing'\n)\ndebiaser.fit(dataset)"
+    },
+    {
+      "title": "Calibration Error Difference remediation",
+      "strategy": "In-processing: adversarial debiasing",
+      "summary": "In-processing: adversarial debiasing is recommended because Calibration Error Difference flagged a fairness gap affecting F. The simulated result shows how the metric could move closer to the configured threshold.",
+      "affected_group": "F",
+      "metric_name": "calibration_error_difference",
+      "before_value": 0.2654,
+      "after_value": 0.1194,
+      "chart_points": [
+        {
+          "value": 0.2654,
+          "index": 0.0
+        },
+        {
+          "value": 0.1194,
+          "index": 1.0
+        }
+      ],
+      "code_snippet": "from aif360.algorithms.inprocessing import AdversarialDebiasing\ndebiaser = AdversarialDebiasing(\n    privileged_groups=privileged_groups,\n    unprivileged_groups=unprivileged_groups,\n    scope_name='fairsight_debiasing'\n)\ndebiaser.fit(dataset)"
+    },
+    {
+      "title": "Equal Opportunity Difference remediation",
+      "strategy": "Post-processing: threshold optimizer",
+      "summary": "Post-processing: threshold optimizer is recommended because Equal Opportunity Difference flagged a fairness gap affecting Black. The simulated result shows how the metric could move closer to the configured threshold.",
+      "affected_group": "Black",
+      "metric_name": "equal_opportunity_difference",
+      "before_value": -1.0,
+      "after_value": -0.45,
+      "chart_points": [
+        {
+          "value": -1.0,
+          "index": 0.0
+        },
+        {
+          "value": -0.45,
+          "index": 1.0
+        }
+      ],
+      "code_snippet": "from fairlearn.postprocessing import ThresholdOptimizer\noptimizer = ThresholdOptimizer(estimator=model, constraints='equal_opportunity')\noptimizer.fit(X_train, y_train, sensitive_features=sensitive_features)"
+    }
+  ],
+  "summary": {
+    "red_issues": 17,
+    "amber_issues": 0,
+    "proxy_flags": 12,
+    "top_issues": [
+      {
+        "metric_name": "statistical_parity_difference",
+        "display_name": "Statistical Parity Difference",
+        "group_name": "gender",
+        "value": -1.0,
+        "severity": "red",
+        "threshold_used": 0.1,
+        "explanation": "The gap in positive outcome rates between F and M is -1.000. Larger gaps suggest unequal access to beneficial outcomes.",
+        "comparison": {
+          "protected_attribute": "gender",
+          "privileged_group": "M",
+          "unprivileged_group": "F"
+        },
+        "affected_group": "F",
+        "recommended_action": null,
+        "intersectional_groups": {},
+        "details": {
+          "privileged_rate": 1.0,
+          "unprivileged_rate": 0.0
+        }
+      },
+      {
+        "metric_name": "statistical_parity_difference",
+        "display_name": "Statistical Parity Difference",
+        "group_name": "race",
+        "value": -1.0,
+        "severity": "red",
+        "threshold_used": 0.1,
+        "explanation": "The gap in positive outcome rates between Black and Asian is -1.000. Larger gaps suggest unequal access to beneficial outcomes.",
+        "comparison": {
+          "protected_attribute": "race",
+          "privileged_group": "Asian",
+          "unprivileged_group": "Black"
+        },
+        "affected_group": "Black",
+        "recommended_action": null,
+        "intersectional_groups": {},
+        "details": {
+          "privileged_rate": 1.0,
+          "unprivileged_rate": 0.0
+        }
+      },
+      {
+        "metric_name": "equal_opportunity_difference",
+        "display_name": "Equal Opportunity Difference",
+        "group_name": "gender",
+        "value": -1.0,
+        "severity": "red",
+        "threshold_used": 0.1,
+        "explanation": "True positive rates differ by -1.000 between F and M.",
+        "comparison": {
+          "protected_attribute": "gender",
+          "privileged_group": "M",
+          "unprivileged_group": "F"
+        },
+        "affected_group": "F",
+        "recommended_action": null,
+        "intersectional_groups": {},
+        "details": {
+          "privileged": {
+            "tpr": 1.0,
+            "fpr": 0.0,
+            "ppv": 1.0,
+            "selection_rate": 1.0
+          },
+          "unprivileged": {
+            "tpr": 0.0,
+            "fpr": 0.1111111111111111,
+            "ppv": 0.0,
+            "selection_rate": 0.1111111111111111
+          }
+        }
+      }
+    ]
+  }
+}

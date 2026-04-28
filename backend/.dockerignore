@@ -1,0 +1,13 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.venv
+tests/.runtime
+tests/tmp_uploads
+htmlcov
+.coverage
+uploads

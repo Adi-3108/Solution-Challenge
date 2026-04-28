@@ -1,0 +1,12 @@
+age,gender,race,priors_count,charge_degree,zipcode,reoffended,predicted_reoffended,score
+22,M,Black,4,F,33101,1,1,0.82
+24,M,Black,2,M,33101,1,1,0.77
+36,F,White,0,M,33102,0,0,0.21
+29,M,Hispanic,3,F,33103,1,1,0.69
+41,F,White,1,M,33104,0,0,0.18
+32,M,Black,5,F,33101,1,1,0.88
+28,F,Black,1,M,33105,0,1,0.57
+38,M,White,2,M,33106,0,0,0.32
+23,M,Black,6,F,33101,1,1,0.9
+47,F,Hispanic,0,M,33103,0,0,0.24
+
