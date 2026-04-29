@@ -8,12 +8,13 @@ export const resolveApiBaseUrl = (
   location: LocationLike | undefined = typeof window !== "undefined" ? window.location : undefined,
 ): string => {
   const trimmedBaseUrl = explicitBaseUrl?.trim();
+  const withoutTrailingSlash = (value: string): string => value.replace(/\/+$/, "");
   if (trimmedBaseUrl) {
     // Avoid route-relative URLs like "api/v1" that break on nested frontend routes.
     if (/^https?:\/\//i.test(trimmedBaseUrl) || trimmedBaseUrl.startsWith("/")) {
-      return trimmedBaseUrl;
+      return withoutTrailingSlash(trimmedBaseUrl);
     }
-    return `/${trimmedBaseUrl}`;
+    return withoutTrailingSlash(`/${trimmedBaseUrl}`);
   }
 
   if (location && STANDALONE_FRONTEND_PORTS.has(location.port)) {
