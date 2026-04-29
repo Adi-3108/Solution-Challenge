@@ -22,7 +22,6 @@ COPY . /app
 
 RUN mkdir -p /app/uploads/reports
 
-# Render (and similar platforms) expect the container to start a long-running process.
-# Run migrations then start Uvicorn on the platform-provided $PORT.
-CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
-
+# Run migrations, then start Uvicorn.
+# Explicit Alembic config path avoids: "No 'script_location' key found..."
+CMD ["sh", "-c", "alembic -c /app/alembic.ini upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
