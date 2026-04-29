@@ -22,6 +22,8 @@ COPY . /app
 
 RUN mkdir -p /app/uploads/reports
 
-# Run migrations, then start Uvicorn.
-# Explicit Alembic config path avoids: "No 'script_location' key found..."
-CMD ["sh", "-c", "set -e; CONFIG_PATH=/app/alembic.ini; if [ ! -f \"$CONFIG_PATH\" ]; then CONFIG_PATH=/app/backend/alembic.ini; fi; alembic -c \"$CONFIG_PATH\" upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]
+
