@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 from collections.abc import Iterable
 
@@ -130,14 +131,35 @@ async def enrich_audit_payload(payload: dict[str, object]) -> dict[str, object] 
     params = {"key": settings.gemini_api_key}
     body = {"contents": [{"parts": [{"text": prompt}]}]}
 
-    try:
-        async with httpx.AsyncClient(timeout=settings.gemini_timeout_seconds) as client:
-            response = await client.post(url, params=params, json=body)
-            response.raise_for_status()
-            response_json = response.json()
-    except Exception as exc:
-        logger.warning("gemini_enrichment_failed", error=str(exc))
-        return None
+    max_retries = 3
+    retry_delay = 2.0
+    
+    for attempt in range(max_retries):
+        try:
+            async with httpx.AsyncClient(timeout=settings.gemini_timeout_seconds) as client:
+                response = await client.post(url, params=params, json=body)
+                response.raise_for_status()
+                response_json = response.json()
+                break
+        except httpx.HTTPStatusError as exc:
+            if exc.response.status_code in (429, 503, 500, 502, 504) and attempt < max_retries - 1:
+                logger.warning(f"gemini_request_failed_retrying", status=exc.response.status_code, attempt=attempt+1)
+                await asyncio.sleep(retry_delay)
+                retry_delay *= 2
+                continue
+            logger.warning("gemini_enrichment_failed", error=str(exc))
+            return None
+        except httpx.RequestError as exc:
+            if attempt < max_retries - 1:
+                logger.warning(f"gemini_request_exception_retrying", error=str(exc), attempt=attempt+1)
+                await asyncio.sleep(retry_delay)
+                retry_delay *= 2
+                continue
+            logger.warning("gemini_enrichment_failed", error=str(exc))
+            return None
+        except Exception as exc:
+            logger.warning("gemini_enrichment_failed", error=str(exc))
+            return None
 
     parsed: dict[str, object] | None = None
     for text in _iter_response_text(response_json if isinstance(response_json, dict) else {}):
