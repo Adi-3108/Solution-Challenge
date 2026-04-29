@@ -19,6 +19,7 @@ from app.models.enums import AuditRunStatus, SeverityLevel
 from app.models.project import Project
 from app.services.bias_engine.orchestrator import BiasAuditEngine
 from app.services.bias_engine.schemas import AuditInput, BiasThresholdConfig
+from app.services.llm.gemini import enrich_audit_payload
 from app.services.notifications.service import notify_run_completion
 from app.services.storage.service import LocalStorageService
 
@@ -77,34 +78,33 @@ async def execute_audit_run(run_id: str, request_id: str) -> None:
             result = await _compute_run(session, run)
             await _persist_result(session, run, result)
             await notify_run_completion(session, run.project_id, run)
-            await _cache_run_result(
-                run.id,
-                _sanitize_json_value(
-                    {
-                        "metrics": [item.model_dump(mode="json") for item in result.metrics],
-                        "shap": result.shap_payload,
-                        "proxy": {
-                            "matrix": result.proxy_matrix,
-                            "findings": [item.model_dump(mode="json") for item in result.proxy_findings],
-                        },
-                        "distributions": {
-                            "distributions": [item.model_dump(mode="json") for item in result.distributions],
-                            "missing_data_rates": result.missing_data_rates,
-                            "confusion_matrices": result.confusion_matrices,
-                            "calibration_curves": result.calibration_curves,
-                            "roc_curves": result.roc_curves,
-                            "intersectionality": [
-                                item.model_dump(mode="json") for item in result.intersectionality
-                            ],
-                        },
-                        "counterfactual": [
-                            item.model_dump(mode="json") for item in result.counterfactual
+            cache_payload = _sanitize_json_value(
+                {
+                    "metrics": [item.model_dump(mode="json") for item in result.metrics],
+                    "shap": result.shap_payload,
+                    "proxy": {
+                        "matrix": result.proxy_matrix,
+                        "findings": [item.model_dump(mode="json") for item in result.proxy_findings],
+                    },
+                    "distributions": {
+                        "distributions": [item.model_dump(mode="json") for item in result.distributions],
+                        "missing_data_rates": result.missing_data_rates,
+                        "confusion_matrices": result.confusion_matrices,
+                        "calibration_curves": result.calibration_curves,
+                        "roc_curves": result.roc_curves,
+                        "intersectionality": [
+                            item.model_dump(mode="json") for item in result.intersectionality
                         ],
-                        "recommendations": [item.model_dump(mode="json") for item in result.recommendations],
-                        "summary": result.summary,
-                    }
-                ),
+                    },
+                    "counterfactual": [
+                        item.model_dump(mode="json") for item in result.counterfactual
+                    ],
+                    "recommendations": [item.model_dump(mode="json") for item in result.recommendations],
+                    "summary": result.summary,
+                }
             )
+            enriched_payload = await enrich_audit_payload(cache_payload)
+            await _cache_run_result(run.id, enriched_payload or cache_payload)
         except Exception as exc:
             await session.rollback()
             run = await _load_run(session, run_id)

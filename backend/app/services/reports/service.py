@@ -19,6 +19,7 @@ from app.models.audit import AuditRun
 from app.models.enums import ReportFormat
 from app.models.report import Report
 from app.services.drift.service import build_run_drift_summary
+from app.services.llm.gemini import enrich_audit_payload
 
 
 async def generate_report(session: AsyncSession, run_id: str, report_format: ReportFormat) -> Report:
@@ -29,6 +30,8 @@ async def generate_report(session: AsyncSession, run_id: str, report_format: Rep
     report = existing.scalar_one_or_none()
     drift_summary = await build_run_drift_summary(session, run_id)
     payload = _build_report_payload(run, drift_summary.model_dump(mode="json"))
+    enriched_payload = await enrich_audit_payload(payload)
+    payload = enriched_payload or payload
     if report_format == ReportFormat.JSON:
         path = _write_json_report(run.id, payload)
     else:

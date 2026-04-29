@@ -27,6 +27,7 @@ from app.schemas.audit import ReportCreateRequest, RunCreateRequest
 from app.services.audit.service import create_audit_run, get_cached_run_results
 from app.services.bias_engine.constants import DISPLAY_NAMES
 from app.services.drift.service import build_run_drift_summary
+from app.services.llm.gemini import enrich_audit_payload
 from app.services.reports.service import generate_report
 from app.utils.audit_log import create_audit_log
 from app.utils.response import envelope
@@ -126,7 +127,8 @@ async def get_run_results(
         "summary": run.summary_json,
         "drift": drift.model_dump(mode="json"),
     }
-    return envelope(request, payload)
+    enriched_payload = await enrich_audit_payload(payload)
+    return envelope(request, enriched_payload or payload)
 
 
 @router.get("/runs/{run_id}/shap")
