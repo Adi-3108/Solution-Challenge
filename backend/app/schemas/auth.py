@@ -68,3 +68,7 @@ class AuthTokenResponse(BaseModel):
     refresh_token: str
     user: UserResponse
 
+
+class GoogleLoginRequest(BaseModel):
+    credential: str  # Google ID token (JWT) returned by the frontend popup
+

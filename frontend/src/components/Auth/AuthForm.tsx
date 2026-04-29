@@ -8,6 +8,8 @@ type AuthFormProps = {
   footerLink: string;
   footerText: string;
   children: ReactNode;
+  /** Optional Google Sign-In button rendered below the form with a divider. */
+  googleButton?: ReactNode;
 };
 
 export const AuthFormLayout = ({
@@ -17,6 +19,7 @@ export const AuthFormLayout = ({
   footerLink,
   footerText,
   children,
+  googleButton,
 }: AuthFormProps) => (
   <div className="flex min-h-screen items-center justify-center px-6 py-12">
     <div className="grid w-full max-w-5xl gap-8 lg:grid-cols-[1.2fr_0.8fr]">
@@ -29,6 +32,16 @@ export const AuthFormLayout = ({
           <p className="max-w-xl text-sm text-slate-600 dark:text-slate-300">{subtitle}</p>
         </div>
         {children}
+        {googleButton && (
+          <div className="mt-6">
+            <div className="relative flex items-center gap-3">
+              <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
+              <span className="text-xs font-medium text-slate-400 dark:text-slate-500">or continue with</span>
+              <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
+            </div>
+            <div className="mt-4 flex justify-center">{googleButton}</div>
+          </div>
+        )}
       </section>
       <aside className="panel hidden flex-col justify-between p-10 lg:flex">
         <div className="space-y-5">

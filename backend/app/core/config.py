@@ -44,6 +44,8 @@ class Settings(BaseSettings):
     s3_access_key: str | None = Field(default=None, alias="S3_ACCESS_KEY")
     s3_secret_key: str | None = Field(default=None, alias="S3_SECRET_KEY")
     s3_bucket: str | None = Field(default=None, alias="S3_BUCKET")
+    google_client_id: str | None = Field(default=None, alias="GOOGLE_CLIENT_ID")
+    google_client_secret: str | None = Field(default=None, alias="GOOGLE_CLIENT_SECRET")
 
     @field_validator("cors_origins", mode="before")
     @classmethod

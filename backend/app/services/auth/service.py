@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from google.oauth2 import id_token as google_id_token
+from google.auth.transport import requests as google_requests
 from fastapi import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -94,3 +96,55 @@ async def ensure_refresh_token_active(token: str) -> str:
 
 def build_reset_token(email: str) -> str:
     return create_reset_token(email)
+
+
+async def google_login_or_register(session: AsyncSession, credential: str) -> "User":
+    """Verify a Google ID token and return (or create) the matching FairSight user."""
+    if not settings.google_client_id:
+        raise AppError(
+            code="google_auth_disabled",
+            message="Google authentication is not configured on this server.",
+            status_code=501,
+        )
+    try:
+        id_info = google_id_token.verify_oauth2_token(
+            credential,
+            google_requests.Request(),
+            settings.google_client_id,
+        )
+    except ValueError as exc:
+        raise AppError(
+            code="invalid_google_token",
+            message="Google ID token is invalid or expired.",
+            status_code=401,
+        ) from exc
+
+    google_sub: str = id_info["sub"]  # stable, unique Google account identifier
+    email: str = id_info.get("email", "")
+
+    # 1. Look up by stable google_id
+    result = await session.execute(select(User).where(User.google_id == google_sub, User.deleted_at.is_(None)))
+    user = result.scalar_one_or_none()
+    if user:
+        return user
+
+    # 2. Account exists with same email (created via password) — link google_id
+    result = await session.execute(select(User).where(User.email == email, User.deleted_at.is_(None)))
+    user = result.scalar_one_or_none()
+    if user:
+        user.google_id = google_sub
+        await session.commit()
+        await session.refresh(user)
+        return user
+
+    # 3. Brand-new Google user — create account (no password)
+    user = User(
+        email=email,
+        hashed_password=None,
+        google_id=google_sub,
+        role=UserRole.ANALYST,
+    )
+    session.add(user)
+    await session.commit()
+    await session.refresh(user)
+    return user

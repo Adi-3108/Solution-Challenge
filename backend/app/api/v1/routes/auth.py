@@ -10,6 +10,7 @@ from app.core.errors import AppError
 from app.core.security import REFRESH_COOKIE_NAME, TokenType, decode_token, hash_password
 from app.models.user import User
 from app.schemas.auth import (
+    GoogleLoginRequest,
     LoginRequest,
     RefreshRequest,
     RegisterRequest,
@@ -23,6 +24,7 @@ from app.services.auth.service import (
     build_reset_token,
     clear_auth_cookies,
     ensure_refresh_token_active,
+    google_login_or_register,
     register_user,
     revoke_refresh_token,
 )
@@ -59,6 +61,21 @@ async def login(
     auth = build_auth_response(user)
     attach_auth_cookies(response, auth.access_token, auth.refresh_token)
     await create_audit_log(session, user.id, "login", "user", user.id, {})
+    await session.commit()
+    return envelope(request, auth.model_dump(mode="json"))
+
+
+@router.post("/google")
+async def google_login(
+    payload: GoogleLoginRequest,
+    request: Request,
+    response: Response,
+    session: AsyncSession = Depends(get_db_session),
+):
+    user = await google_login_or_register(session, payload.credential)
+    auth = build_auth_response(user)
+    attach_auth_cookies(response, auth.access_token, auth.refresh_token)
+    await create_audit_log(session, user.id, "google_login", "user", user.id, {})
     await session.commit()
     return envelope(request, auth.model_dump(mode="json"))
 

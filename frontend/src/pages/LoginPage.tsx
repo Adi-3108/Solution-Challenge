@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 
 import { AuthFormLayout } from "@/components/Auth/AuthForm";
 import { Button } from "@/components/Common/Button";
@@ -20,6 +21,13 @@ export const LoginPage = () => {
       navigate("/dashboard");
     },
   });
+  const googleMutation = useMutation({
+    mutationFn: (credential: string) => authService.googleLogin(credential),
+    onSuccess: (data) => {
+      setUser(data.user);
+      navigate("/dashboard");
+    },
+  });
 
   return (
     <AuthFormLayout
@@ -28,6 +36,21 @@ export const LoginPage = () => {
       footerLabel="Create an account"
       footerLink="/register"
       footerText="Need a workspace?"
+      googleButton={
+        <GoogleLogin
+          onSuccess={(response) => {
+            if (response.credential) {
+              googleMutation.mutate(response.credential);
+            }
+          }}
+          onError={() => {/* toast is shown by the global mutation error handler */}}
+          theme="outline"
+          size="large"
+          shape="rectangular"
+          text="signin_with"
+          logo_alignment="left"
+        />
+      }
     >
       <form onSubmit={form.handleSubmit((values) => mutation.mutate(values))} className="space-y-5">
         <label className="block space-y-2">
@@ -44,10 +67,11 @@ export const LoginPage = () => {
             <p className="text-sm text-rose-600">{form.formState.errors.password.message}</p>
           )}
         </label>
-        <Button type="submit" className="w-full" disabled={mutation.isPending}>
+        <Button type="submit" className="w-full" disabled={mutation.isPending || googleMutation.isPending}>
           {mutation.isPending ? "Logging in..." : "Log in"}
         </Button>
       </form>
     </AuthFormLayout>
   );
 };
+

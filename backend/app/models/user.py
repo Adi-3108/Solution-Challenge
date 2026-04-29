@@ -13,7 +13,8 @@ class User(ORMBaseModel, CreatedTimestampMixin):
     __tablename__ = "users"
 
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
-    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    hashed_password: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    google_id: Mapped[str | None] = mapped_column(String(128), unique=True, nullable=True, index=True)
     role: Mapped[UserRole] = mapped_column(
         db_enum(UserRole, "user_role"), default=UserRole.VIEWER, nullable=False
     )
