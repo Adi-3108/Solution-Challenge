@@ -23,9 +23,26 @@ const refreshClient = axios.create({
   },
 });
 
+const normalizeRequestPath = (url?: string): string | undefined => {
+  if (!url) return url;
+  // Keep absolute URLs untouched; only normalize relative API paths.
+  if (/^https?:\/\//i.test(url)) return url;
+  return url.replace(/^\/+/, "");
+};
+
 type RetryableRequestConfig = InternalAxiosRequestConfig & { _retry?: boolean };
 
 let refreshPromise: Promise<void> | null = null;
+
+httpClient.interceptors.request.use((config) => {
+  config.url = normalizeRequestPath(config.url);
+  return config;
+});
+
+refreshClient.interceptors.request.use((config) => {
+  config.url = normalizeRequestPath(config.url);
+  return config;
+});
 
 const refreshAccessToken = async (): Promise<void> => {
   if (!refreshPromise) {
