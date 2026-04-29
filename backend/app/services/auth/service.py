@@ -53,12 +53,15 @@ def build_auth_response(user: User) -> AuthTokenResponse:
 
 def attach_auth_cookies(response: Response, access_token: str, refresh_token: str) -> None:
     secure_cookie = settings.environment != "development"
+    # Cross-site frontend/backend deployments (e.g. Vercel + Render) require
+    # SameSite=None with Secure cookies so browsers include auth cookies on XHR.
+    same_site = "none" if secure_cookie else "lax"
     response.set_cookie(
         ACCESS_COOKIE_NAME,
         access_token,
         httponly=True,
         secure=secure_cookie,
-        samesite="lax",
+        samesite=same_site,
         max_age=60 * 60,
     )
     response.set_cookie(
@@ -66,7 +69,7 @@ def attach_auth_cookies(response: Response, access_token: str, refresh_token: st
         refresh_token,
         httponly=True,
         secure=secure_cookie,
-        samesite="lax",
+        samesite=same_site,
         max_age=60 * 60 * 24 * 14,
     )
 
