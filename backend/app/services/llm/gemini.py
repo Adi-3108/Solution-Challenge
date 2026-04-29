@@ -147,18 +147,18 @@ async def enrich_audit_payload(payload: dict[str, object]) -> dict[str, object] 
                 await asyncio.sleep(retry_delay)
                 retry_delay *= 2
                 continue
-            logger.warning("gemini_enrichment_failed", error=str(exc))
+            logger.warning("gemini_enrichment_failed", error=repr(exc))
             return None
         except httpx.RequestError as exc:
             if attempt < max_retries - 1:
-                logger.warning(f"gemini_request_exception_retrying", error=str(exc), attempt=attempt+1)
+                logger.warning(f"gemini_request_exception_retrying", error=repr(exc), attempt=attempt+1)
                 await asyncio.sleep(retry_delay)
                 retry_delay *= 2
                 continue
-            logger.warning("gemini_enrichment_failed", error=str(exc))
+            logger.warning("gemini_enrichment_failed", error=repr(exc))
             return None
         except Exception as exc:
-            logger.warning("gemini_enrichment_failed", error=str(exc))
+            logger.warning("gemini_enrichment_failed", error=repr(exc))
             return None
 
     parsed: dict[str, object] | None = None
