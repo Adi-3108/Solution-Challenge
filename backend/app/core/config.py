@@ -56,6 +56,35 @@ class Settings(BaseSettings):
             return [item.strip().strip("'\"") for item in stripped.split(",") if item.strip()]
         return [item.strip() for item in value.split(",") if item.strip()]
 
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def normalize_database_url(cls, value: str) -> str:
+        """
+        Render's `connectionString` for Postgres is typically `postgresql://...`.
+        This app expects asyncpg for the async SQLAlchemy engine.
+        """
+        if not value:
+            return value
+        if value.startswith("postgres://") and "+asyncpg" not in value:
+            return value.replace("postgres://", "postgresql+asyncpg://", 1)
+        if value.startswith("postgresql://") and "+asyncpg" not in value:
+            return value.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return value
+
+    @field_validator("alembic_database_url", mode="before")
+    @classmethod
+    def normalize_alembic_database_url(cls, value: str) -> str:
+        """
+        Alembic env expects a sync SQLAlchemy URL with psycopg.
+        """
+        if not value:
+            return value
+        if value.startswith("postgres://") and "+psycopg" not in value:
+            return value.replace("postgres://", "postgresql+psycopg://", 1)
+        if value.startswith("postgresql://") and "+psycopg" not in value:
+            return value.replace("postgresql://", "postgresql+psycopg://", 1)
+        return value
+
 
 @lru_cache
 def get_settings() -> Settings:

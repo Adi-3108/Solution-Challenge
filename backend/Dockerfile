@@ -1,7 +1,8 @@
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    ALEMBIC_CONFIG=/app/alembic.ini
 
 WORKDIR /app
 
@@ -22,6 +23,8 @@ COPY . /app
 
 RUN mkdir -p /app/uploads/reports
 
-# Run migrations, then start Uvicorn.
-# Explicit Alembic config path avoids: "No 'script_location' key found..."
-CMD ["sh", "-c", "alembic -c /app/alembic.ini upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]
+
