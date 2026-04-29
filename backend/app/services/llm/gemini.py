@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import random
 from collections.abc import Iterable
 
 import httpx
@@ -127,39 +128,86 @@ async def enrich_audit_payload(payload: dict[str, object]) -> dict[str, object] 
         f"INPUT JSON:\n{json.dumps(compact_input, ensure_ascii=True)}"
     )
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{settings.gemini_model}:generateContent"
     params = {"key": settings.gemini_api_key}
     body = {"contents": [{"parts": [{"text": prompt}]}]}
 
-    max_retries = 3
-    retry_delay = 2.0
-    
-    for attempt in range(max_retries):
-        try:
-            async with httpx.AsyncClient(timeout=settings.gemini_timeout_seconds) as client:
-                response = await client.post(url, params=params, json=body)
-                response.raise_for_status()
-                response_json = response.json()
-                break
-        except httpx.HTTPStatusError as exc:
-            if exc.response.status_code in (429, 503, 500, 502, 504) and attempt < max_retries - 1:
-                logger.warning(f"gemini_request_failed_retrying", status=exc.response.status_code, attempt=attempt+1)
-                await asyncio.sleep(retry_delay)
-                retry_delay *= 2
-                continue
-            logger.warning("gemini_enrichment_failed", error=repr(exc))
-            return None
-        except httpx.RequestError as exc:
-            if attempt < max_retries - 1:
-                logger.warning(f"gemini_request_exception_retrying", error=repr(exc), attempt=attempt+1)
-                await asyncio.sleep(retry_delay)
-                retry_delay *= 2
-                continue
-            logger.warning("gemini_enrichment_failed", error=repr(exc))
-            return None
-        except Exception as exc:
-            logger.warning("gemini_enrichment_failed", error=repr(exc))
-            return None
+    # gemini-2.5-flash is a preview model with limited capacity — 503s are common.
+    # Build a fallback chain: try the configured model first, then the stable fallback.
+    _FALLBACK_MODEL = "gemini-1.5-flash"
+    model_chain: list[str] = [settings.gemini_model]
+    if settings.gemini_model != _FALLBACK_MODEL:
+        model_chain.append(_FALLBACK_MODEL)
+
+    # gemini-2.5-flash has a "thinking" phase that can take 60-90 s.
+    # Use a structured timeout: short connect, long read.
+    gemini_timeout = httpx.Timeout(
+        connect=10.0,
+        read=max(float(settings.gemini_timeout_seconds), 90.0),
+        write=10.0,
+        pool=5.0,
+    )
+
+    response_json: dict[str, object] | None = None
+
+    for model in model_chain:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        max_retries = 2  # 2 tries per model before switching to fallback
+        retry_delay = 5.0
+
+        for attempt in range(max_retries):
+            try:
+                async with httpx.AsyncClient(timeout=gemini_timeout) as client:
+                    response = await client.post(url, params=params, json=body)
+                    response.raise_for_status()
+                    response_json = response.json()
+                    break  # success — exit retry loop
+            except httpx.HTTPStatusError as exc:
+                status = exc.response.status_code
+                if status in (429, 500, 502, 503, 504) and attempt < max_retries - 1:
+                    jitter = random.uniform(0.5, 1.5)
+                    logger.warning(
+                        "gemini_request_failed_retrying",
+                        model=model,
+                        status=status,
+                        attempt=attempt + 1,
+                    )
+                    await asyncio.sleep(retry_delay * jitter)
+                    retry_delay *= 2
+                    continue
+                # Capacity errors (503/502/504) on last attempt → try next model
+                if status in (502, 503, 504):
+                    logger.warning(
+                        "gemini_model_unavailable_trying_fallback",
+                        model=model,
+                        status=status,
+                    )
+                    break  # exit retry loop, outer loop picks next model
+                logger.warning("gemini_enrichment_failed", model=model, error=repr(exc))
+                return None
+            except httpx.RequestError as exc:
+                if attempt < max_retries - 1:
+                    jitter = random.uniform(0.5, 1.5)
+                    logger.warning(
+                        "gemini_request_exception_retrying",
+                        model=model,
+                        error=repr(exc),
+                        attempt=attempt + 1,
+                    )
+                    await asyncio.sleep(retry_delay * jitter)
+                    retry_delay *= 2
+                    continue
+                logger.warning("gemini_enrichment_failed", model=model, error=repr(exc))
+                return None
+            except Exception as exc:
+                logger.warning("gemini_enrichment_failed", model=model, error=repr(exc))
+                return None
+
+        if response_json is not None:
+            break  # success — skip remaining models in chain
+
+    if response_json is None:
+        logger.warning("gemini_enrichment_failed_all_models", models=model_chain)
+        return None
 
     parsed: dict[str, object] | None = None
     for text in _iter_response_text(response_json if isinstance(response_json, dict) else {}):
