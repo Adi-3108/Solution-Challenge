@@ -47,7 +47,7 @@ services:
           property: connectionString
       - key: FRONTEND_ORIGIN
         value: https://YOUR_FRONTEND_DOMAIN_HERE
-      # `CORS_ORIGINS` is parsed as a comma-separated string in this backend.
+      
       - key: CORS_ORIGINS
         value: https://YOUR_FRONTEND_DOMAIN_HERE
 
